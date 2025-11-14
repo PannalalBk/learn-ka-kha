@@ -1,0 +1,377 @@
+<!-- <!DOCTYPE html>
+<html lang="ne">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nepali Word Game with Keyboard</title>
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #f7ffd9, #d8f3ff);
+        margin: 0;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+        font-size: 36px;
+        color: #333;
+    }
+    .game-box {
+        max-width: 850px;
+        margin: auto;
+        background: white;
+        padding: 22px;
+        border-radius: 18px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .word-display {
+        font-size: 42px;
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+    .input-box {
+        width: 100%;
+        padding: 18px;
+        font-size: 28px;
+        border-radius: 10px;
+        border: 2px solid #ccc;
+        margin-top: 18px;
+        text-align: center;
+    }
+    .keyboard {
+        margin-top: 25px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+    .key {
+        padding: 14px 18px;
+        font-size: 22px;
+        background: #f0f0f0;
+        border-radius: 10px;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        transition: 0.2s;
+        user-select: none;
+    }
+    .key:hover {
+        background: #e2e2e2;
+    }
+    .special { background: #ffe6cc; }
+    .btn-row { display:flex; gap:12px; justify-content:center; margin-top:25px; }
+    .btn { padding:14px 24px; font-size:20px; border:none; border-radius:10px; cursor:pointer; }
+    .check { background:#b3ffb3; }
+    .skip { background:#ffd19a; }
+    .reset { background:#ff9aa2; }
+    .status { text-align:center; font-size:24px; margin-top:15px; font-weight:bold; }
+</style>
+</head>
+<body>
+
+<h1>नेपाली शब्द खेल</h1>
+<div class="game-box">
+    <div id="word" class="word-display"></div>
+    <input id="typed" class="input-box" readonly />
+
+    KEYBOARD
+    <div class="keyboard">
+        Vowels
+        <div class="key">अ</div>
+        <div class="key">आ</div>
+        <div class="key">इ</div>
+        <div class="key">ई</div>
+        <div class="key">उ</div>
+        <div class="key">ऊ</div>
+        <div class="key">ए</div>
+        <div class="key">ऐ</div>
+        <div class="key">ओ</div>
+        <div class="key">औ</div>
+
+        Matras
+        <div class="key special">ा</div>
+        <div class="key special">ि</div>
+        <div class="key special">ी</div>
+        <div class="key special">ु</div>
+        <div class="key special">ू</div>
+
+        Consonants
+        <div class="key">क</div><div class="key">ख</div><div class="key">ग</div><div class="key">घ</div>
+        <div class="key">च</div><div class="key">छ</div><div class="key">ज</div><div class="key">झ</div>
+        <div class="key">ट</div><div class="key">ठ</div><div class="key">ड</div><div class="key">ढ</div>
+        <div class="key">त</div><div class="key">थ</div><div class="key">द</div><div class="key">ध</div>
+        <div class="key">न</div>
+        <div class="key">प</div><div class="key">फ</div><div class="key">ब</div><div class="key">भ</div>
+        <div class="key">म</div><div class="key">य</div><div class="key">र</div>
+        <div class="key">ल</div><div class="key">व</div>
+        <div class="key">स</div><div class="key">ह</div>
+
+        Controls
+        <div class="key special" onclick="backspace()">DEL</div>
+        <div class="key special" onclick="clearInput()">CLEAR</div>
+    </div>
+
+    <div class="btn-row">
+        <button class="btn check" onclick="checkWord()">CHECK</button>
+        <button class="btn skip" onclick="skipWord()">SKIP</button>
+        <button class="btn reset" onclick="resetGame()">RESET</button>
+    </div>
+
+    <div id="status" class="status"></div>
+</div>
+
+<script>
+const words = ["काका","मामा","आमा","जामा","लामो","थाल","कलम","कापी","झोला","माला",
+"रोटी","दाल","भात","फूल","किरा","नानी","निलो","रातो","हरियो","कुरा",
+"काग","कुकुर","चरा","बिरालो","आगो","पानी","काला","दाना","घर","माथि",
+"तल","गमला","सानो","नौलो","झापा","साया","काफी","दिवा","कान","नाक",
+"आँखा","दिदी","दाइ","भाइ","बाबा","कुरा","थोरै","धेरै","राम्रा","नानी"];
+
+let index = 0;
+let streak = 0;
+
+function loadWord() {
+    document.getElementById("typed").value = "";
+    document.getElementById("word").textContent = words[index];
+}
+
+// Keyboard typing
+document.querySelectorAll('.key').forEach(btn => {
+    btn.addEventListener('click', () => {
+        if(btn.innerText === 'DEL' || btn.innerText === 'CLEAR') return;
+        document.getElementById("typed").value += btn.innerText;
+    });
+});
+
+function backspace(){
+    let box = document.getElementById("typed");
+    box.value = box.value.slice(0,-1);
+}
+function clearInput(){ document.getElementById("typed").value = ""; }
+
+function checkWord() {
+    let typed = document.getElementById("typed").value.trim();
+    let correct = words[index];
+
+    if(typed === correct) {
+        streak++;
+        document.getElementById("status").textContent = "✔ सही!";
+        document.getElementById("status").style.color = "green";
+        index++;
+
+        if(streak % 5 === 0) {
+            document.body.style.background = streak % 10 === 0 ? "#e6ccff" : "#ffe6f2";
+        }
+
+        if(index < words.length) loadWord();
+        else document.getElementById("status").textContent = "🎉 ५० शब्द पूरा!";
+
+    } else {
+        document.getElementById("status").textContent = "✖ मिलेन! फेरि प्रयास गर्नुहोस्";
+        document.getElementById("status").style.color = "red";
+    }
+}
+
+function skipWord(){ index++; streak = 0; loadWord(); }
+function resetGame(){ index = 0; streak = 0; loadWord(); }
+
+loadWord();
+</script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nepali Keyboard Word Game</title>
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #f7ffd9, #d8f3ff);
+        margin: 0;
+        padding: 20px;
+        transition: background 0.5s;
+    }
+    h1 {
+        text-align: center;
+        font-size: 36px;
+        color: #333;
+        margin-bottom: 15px;
+    }
+    .game-box {
+        max-width: 950px;
+        margin: auto;
+        background: white;
+        padding: 22px;
+        border-radius: 18px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    .word-display {
+        font-size: 40px;
+        text-align: center;
+        font-weight: bold;
+        margin: 12px;
+    }
+    .input-box {
+        width: 100%;
+        padding: 16px;
+        font-size: 28px;
+        border-radius: 10px;
+        border: 2px solid #ccc;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .keyboard-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 12px;
+    }
+    .key-btn {
+        padding: 14px 18px;
+        font-size: 22px;
+        border-radius: 10px;
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        transition: 0.2s;
+        user-select: none;
+    }
+    .key-btn:hover { background: #e2e2e2; }
+    .special { background: #ffe6cc; }
+    .btn-row { display: flex; gap: 12px; justify-content: center; margin-top: 20px; }
+    .btn { padding: 14px 24px; font-size: 20px; border-radius: 10px; cursor: pointer; border: none; }
+    .check { background:#b3ffb3; } .skip { background:#ffd19a; } .reset { background:#ff9aa2; }
+    .status { text-align: center; font-size: 24px; margin-top: 15px; font-weight: bold; }
+    .star { font-size: 28px; color: gold; display: inline-block; margin:0 2px; }
+    .back-btn{
+        /*padding: 50px;*/
+        /*margin: 20px*/
+        color: white;
+        background-color: #cb08f2fd;
+        text-align: center;
+        max-width: 950px;
+        margin: auto;
+        /*background: white; */
+        padding: 22px;
+        border-radius: 18px;
+        /*box-shadow: 0 4px 12px rgba(0,0,0,0.12);*/
+       
+    }
+     footer{width:100%;max-width:1100px;text-align:center;margin-top:18px;color:#444;opacity:0.9;font-size:14px}
+</style>
+</head>
+<body>
+<h1>नेपाली शब्द खेल</h1>
+<div class="game-box">
+    <div id="word" class="word-display"></div>
+    <input id="typed" class="input-box" readonly />
+
+    <div class="keyboard-row" id="vowels"></div>
+    <div class="keyboard-row" id="matras"></div>
+    <div class="keyboard-row" id="consonants"></div>
+    <div class="keyboard-row" id="controls"></div>
+
+    <div class="btn-row">
+        <button class="btn check" onclick="checkWord()">CHECK</button>
+        <button class="btn skip" onclick="skipWord()">SKIP</button>
+        <button class="btn reset" onclick="resetGame()">RESET</button>
+    </div>
+
+    <div id="status" class="status"></div>
+    <div id="stars" class="status"></div>
+</div>
+<div class="back-btn">
+    <a href="index.html" class="btn" style="background:var(--accent);padding:8px 12px;border-radius:8px;text-decoration:none">वर्ण मालामा जानुहोस्!!!!</a>
+  </div>
+  <footer>© 2025 Sanskas Digital — बच्चाहरुका लागि सरल र रमाइलो तरीका</footer>
+
+<script>
+const vowels = ['अ','आ','इ','ई','उ','ऊ','ऋ','ए','ऐ','ओ','औ','अं','अः'];
+const matras = ['ा','ि','ी','ु','ू','े','ै','ो','ौ','ं','ः'];
+const consonants = ['क','ख','ग','घ','ङ','च','छ','ज','झ','ञ','ट','ठ','ड','ढ','ण','त','थ','द','ध','न','प','फ','ब','भ','म','य','र','ल','व','श','ष','स','ह','क्ष','त्र','ज्ञ'];
+const controls = ['DEL','CLEAR'];
+
+vowels.forEach(v => addKey('vowels',v));
+matras.forEach(m => addKey('matras',m));
+consonants.forEach(c => addKey('consonants',c));
+controls.forEach(c => addKey('controls',c,true));
+
+function addKey(parentId,char,isControl){
+    const btn = document.createElement('div');
+    btn.className = 'key-btn'+(isControl?' special':'');
+    btn.innerText = char;
+    btn.onclick = ()=>{
+        if(char==='DEL') backspace();
+        else if(char==='CLEAR') clearInput();
+        else {
+            document.getElementById('typed').value += char;
+            playSound('type');
+        }
+    };
+    document.getElementById(parentId).appendChild(btn);
+}
+
+const words = ["काका","मामा","जामा","आमा","बाबा","गमला","थाल","लामो","माला","नानी",
+"कलम","कापी","झोला","रोटी","दाल","भात","पाठ","किरा","काग","कुकुर",
+"चरा","बिरालो","आगो","पानी","काला","दाना","घर","माथि","तल","फूल",
+"साया","झापा","निलो","रातो","हरियो","कुरा","दिदी","भाइ","दाइ","नौलो",
+"थोरै","धेरै","राम्रा","नानी","किरा","साना","बड़ा","झोला","माला"];
+
+let index=0, streak=0;
+
+function loadWord(){
+    document.getElementById('typed').value='';
+    document.getElementById('word').textContent = words[index];
+}
+
+function backspace(){
+    let box = document.getElementById('typed');
+    box.value = box.value.slice(0,-1);
+    playSound('back');
+}
+function clearInput(){ document.getElementById('typed').value=''; playSound('clear'); }
+
+function playSound(type){
+    let audio;
+    if(type==='type') audio = new Audio('https://www.soundjay.com/button/sounds/button-16.mp3');
+    else if(type==='correct') audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
+    else if(type==='back') audio = new Audio('https://www.soundjay.com/button/sounds/button-09.mp3');
+    else if(type==='clear') audio = new Audio('https://www.soundjay.com/button/sounds/button-10.mp3');
+    if(audio) audio.play();
+}
+
+function checkWord(){
+    let typed = document.getElementById('typed').value.trim();
+    let correct = words[index];
+    let status = document.getElementById('status');
+    let starsDiv = document.getElementById('stars');
+
+    if(typed===correct){
+        streak++;
+        playSound('correct');
+        status.textContent='✔ सही!'; status.style.color='green';
+        if(streak%5===0){
+            document.body.style.background = streak%10===0?'#e6ccff':'#ffe6f2';
+            starsDiv.innerHTML='';
+            for(let i=0;i<streak/5;i++) starsDiv.innerHTML+='<span class="star">★</span>';
+        }
+        index++;
+        if(index<words.length) loadWord();
+        else status.textContent='🎉 ५० शब्द पूरा! बधाई छ!';
+    } else {
+        status.textContent='✖ मिलेन! फेरि प्रयास गर्नुहोस्'; status.style.color='red';
+        playSound('type'); // beep type for wrong
+    }
+}
+
+function skipWord(){ index++; streak=0; loadWord(); document.getElementById('stars').innerHTML=''; }
+function resetGame(){ index=0; streak=0; loadWord(); document.body.style.background='linear-gradient(135deg, #f7ffd9, #d8f3ff)'; document.getElementById('status').textContent=''; document.getElementById('stars').innerHTML=''; }
+
+loadWord();
+</script>
+</body>
+</html>
