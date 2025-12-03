@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ne">
 <head>
@@ -15,9 +14,7 @@
   --accent2:#ff9a76;
   --key:#ffe066;
 }
-
-*{box-sizing:border-box;}
-
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:'Mangal',sans-serif;
@@ -29,7 +26,6 @@ body{
   padding:18px;
   color:#222;
 }
-
 header{
   width:100%;
   max-width:1100px;
@@ -38,14 +34,12 @@ header{
   justify-content:space-between;
   gap:12px;
 }
-
 h1{
   margin:6px 0;
   color:#8b1744;
   text-shadow:1px 1px #fff;
-  font-size:1.5rem;
+  font-size:20px;
 }
-
 .container{
   width:100%;
   max-width:1100px;
@@ -54,17 +48,35 @@ h1{
   padding:16px;
   box-shadow:0 8px 24px rgba(0,0,0,0.08);
   margin-top:12px;
+  display:flex;
+  flex-direction:column;
 }
-
 .top-row{
   display:flex;
   gap:12px;
   flex-wrap:wrap;
 }
-
 .left,.right{
   flex:1;
   min-width:260px;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Fixed display + buttons */
+.display-controls-wrapper{
+  position:sticky;
+  top:0;
+  background:var(--card);
+  z-index:10;
+  padding-bottom:10px;
+}
+
+/* Make letters scrollable */
+.scroll-board{
+  overflow-y:auto;
+  max-height:60vh;
+  padding-top:10px;
 }
 
 .display{
@@ -72,18 +84,17 @@ h1{
   color:white;
   padding:20px;
   text-align:center;
-  font-size:5vw; /* responsive */
+  font-size:50px;
   min-height:150px;
   width:100%;
-  max-width:470px;
   box-shadow:0 6px 16px rgba(0,0,0,0.04);
   margin-bottom:10px;
   display:flex;
   align-items:center;
   justify-content:center;
   word-break:break-word;
-  border-radius:20px;
-  margin-top:10px;
+  border-radius: 20px;
+  margin-top: 10px;
 }
 
 .vowel-list{
@@ -91,9 +102,7 @@ h1{
   gap:8px;
   flex-wrap:wrap;
   margin-top:8px;
-  justify-content:center;
 }
-
 .combined-vowel{
   display:flex;
   flex-direction:column;
@@ -107,13 +116,11 @@ h1{
   width:60px;
   user-select:none;
 }
-
 .big-vowel{
   font-size:26px;
   font-weight:700;
   margin-bottom:4px;
 }
-
 .small-maatra{
   font-size:22px;
   font-weight:600;
@@ -125,11 +132,10 @@ h1{
 
 .board{
   display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(60px,1fr));
+  grid-template-columns: repeat(6, 1fr);
   gap:10px;
   margin-top:10px;
 }
-
 .key{
   background:var(--key);
   border-radius:10px;
@@ -141,17 +147,12 @@ h1{
   transition:transform .12s,background .12s;
   user-select:none;
 }
-
 .key:hover{
   transform:scale(1.04);
   background:var(--accent2);
   color:#fff;
 }
-
-.special{
-  background:var(--accent);
-  color:#fff;
-}
+.special{background:var(--accent);color:#fff}
 
 .controls{
   display:flex;
@@ -159,7 +160,6 @@ h1{
   margin-top:10px;
   flex-wrap:wrap;
 }
-
 .btn{
   padding:8px 12px;
   border-radius:8px;
@@ -168,7 +168,6 @@ h1{
   font-weight:600;
   background:#f0f0f0;
 }
-
 footer{
   width:100%;
   max-width:1100px;
@@ -179,34 +178,10 @@ footer{
   font-size:14px;
 }
 
-.history{
-  margin-top:12px;
-  border-radius:10px;
-  padding:10px;
-  background:#fcfcff;
-  border:1px solid #f0f4ff;
-  max-height:160px;
-  overflow:auto;
-}
-
-.hist-item{
-  padding:6px 8px;
-  border-radius:6px;
-  margin-bottom:6px;
-  background:#fffef8;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
 @media (max-width:760px){
-  .board{grid-template-columns:repeat(4,1fr);}
-  .top-row{flex-direction:column;}
-  .display{font-size:8vw;}
-}
-
-@media (min-width:761px) and (max-width:1100px){
-  .display{font-size:4vw;}
+  .board{grid-template-columns:repeat(4,1fr)}
+  .top-row{flex-direction:column}
+  .display{font-size:36px;min-height:120px;}
 }
 </style>
 </head>
@@ -214,30 +189,31 @@ footer{
 <header>
   <h1>नेपाली वर्ण माला र शब्द सिकाऔं</h1>
   <div>
-    <a href="practice.html" class="btn" style="background:var(--accent);color:#fff;text-decoration:none;">Practice (शब्द लेखौँ)</a>
-    <a href="picture.html" class="btn" style="background:var(--accent);color:#fff;text-decoration:none;">Picture Play (चित्र र वर्ण खेल)</a>
+    <a href="practice.html" class="btn" style="background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none">Practice</a>
+    <a href="picture.html" class="btn" style="background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none">Picture Play</a>
   </div>
 </header>
 
 <div class="container">
   <div class="top-row">
     <div class="left">
-      <div class="vowel-list" id="vowelList"></div>
-      <div id="display" class="display" aria-live="polite"></div>
-
-      <div class="controls">
-        <button id="btn-chandra" class="btn">ँ</button>
-        <button id="btn-halant" class="btn">्</button>
-        <button id="btn-space" class="btn">Space</button>
-        <button id="btn-del" class="btn">Del</button>
-        <button id="btn-clear" class="btn">C</button>
-        <button id="btn-eq" class="btn" style="background:#8bd3a8">=</button>
-        <button id="btn-save" class="btn" style="background:#ffd166">Save</button>
-        <button id="btn-load" class="btn" style="background:#a0c4ff">Load</button>
+      <div class="display-controls-wrapper">
+        <div id="display" class="display" aria-live="polite"></div>
+        <div class="controls">
+          <button id="btn-chandra" class="btn">ँ</button>
+          <button id="btn-halant" class="btn">्</button>
+          <button id="btn-space" class="btn">Space</button>
+          <button id="btn-del" class="btn">Del</button>
+          <button id="btn-clear" class="btn">C</button>
+          <button id="btn-eq" class="btn" style="background:#8bd3a8">=</button>
+          <button id="btn-save" class="btn" style="background:#ffd166">Save</button>
+          <button id="btn-load" class="btn" style="background:#a0c4ff">Load</button>
+        </div>
       </div>
-    </div>
-    <div class="right">
-      <div id="board" class="board"></div>
+      <div class="scroll-board">
+        <div class="vowel-list" id="vowelList"></div>
+        <div id="board" class="board"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -259,7 +235,7 @@ consonants.forEach(ch=>{
   board.appendChild(el);
 });
 
-/* render vowels */
+/* render combined vowels */
 const vowelList = document.getElementById('vowelList');
 vowels.forEach(v=>{
   const box = document.createElement('div');
@@ -274,19 +250,19 @@ vowels.forEach(v=>{
 let audioCtx=null;
 function ensureAudio(){if(!audioCtx){audioCtx=new(window.AudioContext||window.webkitAudioContext)();}}
 function playClick(freq=360,type='sine',len=0.06){try{ensureAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.value=0.08;o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+len);}catch(e){}}
-
 function speakNepali(txt){
-  if(!('speechSynthesis' in window))return;
-  const u = new SpeechSynthesisUtterance(txt);
-  u.lang = 'ne-NP';
-  u.rate = 0.95;
-  u.pitch = 1.0;
-  const voices = speechSynthesis.getVoices();
-  let v = voices.find(v=>v.lang.startsWith('ne')) || voices.find(v=>v.lang.startsWith('hi'));
+  if(!('speechSynthesis' in window)) return;
+  const u=new SpeechSynthesisUtterance(txt);
+  u.lang='ne-NP';
+  u.rate=0.95;
+  u.pitch=1;
+  const voices=speechSynthesis.getVoices();
+  let v=voices.find(v=>v.lang.startsWith('ne')) || voices.find(v=>v.lang.startsWith('hi'));
   if(v) u.voice=v;
   speechSynthesis.speak(u);
 }
 
+/* display */
 const display=document.getElementById('display');
 let lastConsonant='';
 
@@ -296,15 +272,16 @@ function handleCharacterInput(char,type){
   if(type==='maatra'){playClick(520,'sine');if(lastConsonant){display.textContent=display.textContent.slice(0,-1)+lastConsonant+char;lastConsonant='';}else{display.textContent+=char;}speakNepali(maatraToSpeak[char]||char);}
 }
 
+/* click listener */
 document.body.addEventListener('click',ev=>{
-  const t = ev.target;
-  if(t.classList.contains('consonant')) handleCharacterInput(t.textContent.trim(),'consonant');
-  else if(t.classList.contains('big-vowel')) handleCharacterInput(t.textContent.trim(),'vowel');
-  else if(t.classList.contains('small-maatra')) handleCharacterInput(t.textContent.trim(),'maatra');
+  const t=ev.target;
+  if(t.classList.contains('consonant'))handleCharacterInput(t.textContent.trim(),'consonant');
+  else if(t.classList.contains('big-vowel'))handleCharacterInput(t.textContent.trim(),'vowel');
+  else if(t.classList.contains('small-maatra'))handleCharacterInput(t.textContent.trim(),'maatra');
 });
 
 /* controls */
-document.getElementById('btn-chandra').addEventListener('click',()=>{playClick(460,'triangle');display.textContent+='ँ';lastConsonant='';speakNepali('चन्द्रविन्दु');});
+document.getElementById('btn-chandra').addEventListener('click',()=>{playClick(460,'triangle');display.textContent+='ँ';lastConsonant='';speakNepali('चन्द्रबिन्दु');});
 document.getElementById('btn-del').addEventListener('click',()=>{playClick(260,'square');display.textContent=display.textContent.slice(0,-1);lastConsonant='';});
 document.getElementById('btn-clear').addEventListener('click',()=>{playClick(260,'sawtooth');display.textContent='';lastConsonant='';});
 document.getElementById('btn-halant').addEventListener('click',()=>{playClick(460,'triangle');display.textContent+='्';lastConsonant='';speakNepali('हलन्त');});
@@ -320,7 +297,7 @@ document.getElementById('btn-eq').addEventListener('click',()=>{
     display.style.background='linear-gradient(90deg,#fff,#f0fff4)';
     setTimeout(()=>display.style.background='',350);
     speakNepali('सेभ गरियो: '+res);
-  }else{
+  } else{
     playClick(160,'sawtooth');
     speakNepali('खाली छ');
   }
@@ -330,6 +307,4 @@ document.getElementById('btn-load').addEventListener('click',()=>{display.textCo
 </script>
 </body>
 </html>
-
-
 
